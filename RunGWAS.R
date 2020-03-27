@@ -36,6 +36,9 @@ phenos <- phenos[match(indvs, phenos$SampleSZ),]
 
 #################################   Get phenotypes and covariates   ################################
 
+#Cor between 5 and 100 ug/ml mef RG phenotypes
+cor(phenos$Mef5, phenos$Mef100, use = "complete.obs")
+
 #Get clean binary phenotypes
 phenos$MT_code <- ifelse(phenos$MT=="A1",1,0)
 phenos$Mef_code <- ifelse(phenos$Mef5 > 0.10,1,0)

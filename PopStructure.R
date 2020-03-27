@@ -130,12 +130,21 @@ for(i in 1:length(region_order)){
   sites <- field_info$Field[field_info$Region==region]
   colors <- field_info$color[field_info$Region==region]
   pch <- field_info$pch[field_info$Region==region]
-  legend(x_starts[i], y_starts[i], legend=paste(sites, ", n=", site_counts[match(sites, names(site_counts))], sep=""),
+  legend(x_starts[i], y_starts[i], 
+          legend=mapply(function(x,y)
+            as.expression(bquote(paste(.(x), ", ", italic("n"), "=", 
+                                       .(y), sep=""))),
+            sites, site_counts[match(sites, names(site_counts))]),
          col = colors,
          pch = pch,
          bty='n', title = as.expression(bquote(bold(.(region)))),
          title.adj = 0, cex=0.95)
 }
+
+test <- mapply(function(x,y)
+  as.expression(bquote(paste(.(x), ", ", italic("n"), "=", 
+                             .(y), sep=""))),
+  sites, site_counts[match(sites, names(site_counts))])
 
 text(c(0,6),c(50,50), c("A", "B"), cex=2)
 

@@ -288,6 +288,7 @@ test_depths <- function(reads, lgs, ploidies, test_lg, downsample = T){
 ploidy_checks <- ploidy_calls
 base_ploidies <- rep(NA, nrow(ploidy_calls))
 lgs <- as.factor(depths$LG)
+set.seed(1207)
 for(i in 1:nrow(ploidy_calls)){
   for(j in 1:ncol(ploidy_calls)){
     if(!is.na(ploidy_calls[i,j]) & ploidy_calls[i,j]=="3n"){
@@ -310,7 +311,6 @@ for(i in 1:nrow(ploidy_calls)){
     }
   }
 }
-
 
 write.csv(ploidy_checks, "tables/ploidy_calls.csv", quote=F, row.names = T)
 
@@ -456,7 +456,9 @@ for(i in 1:18){
   }
   hist(abs[abs$LG==i,depth_column], 
        col = ploidy_colors[match(calls[i], ploidy_types)],
-       main = paste("LG ", i, " (n=", n, ")", sep=""),
+       main = bquote(paste(bold("LG "), bold(.(as.character(i))),
+                                  bold(" ("),bolditalic("n"),bold("="),
+                                  bold(.(as.character(n))),bold(")"), sep='')),
        xlab = xlabel,
        ylab = ylabel,
        cex.main=1,
@@ -484,7 +486,7 @@ boxplot(depths[,depth_column]~depths$LG,
         cex.axis=1.1)
 
 legend(5.1,-38, 
-       c("NA", "2n", "3n"), 
+       c("NA", expression(paste("2", italic("n"))), expression(paste("3", italic("n")))), 
        fill=ploidy_colors,
        x.intersp = 0.4,
        text.width=1.5,
@@ -539,7 +541,9 @@ for(i in 1:18){
   }
   hist(abs[abs$LG==i,depth_column], 
        col = ploidy_colors[match(calls[i], ploidy_types)],
-       main = paste("LG ", i, " (n=", n, ")", sep=""),
+       main = bquote(paste(bold("LG "), bold(.(as.character(i))),
+                                  bold(" ("),bolditalic("n"),bold("="),
+                                  bold(.(as.character(n))),bold(")"), sep='')),
        xlab = xlabel,
        ylab = ylabel,
        cex.main=1,
@@ -567,7 +571,7 @@ boxplot(depths[,depth_column]~depths$LG,
         cex.axis=1.1)
 
 legend(5.1,-15, 
-       c("?", "2n", "3n"), 
+       c("?", expression(paste("2", italic("n"))), expression(paste("3", italic("n")))), 
        fill=ploidy_colors,
        x.intersp = 0.4,
        text.width=1.5,
@@ -580,10 +584,10 @@ dev.off()
 
 ########################################## Random calculations ################################
 sum(!is.na(ploidy_checks)) #Non NA 
-sum(ploidy_checks!="even",na.rm=T) #Odd
+sum(ploidy_checks!="2n",na.rm=T) #Odd
 odd_counts
 
-aneuploid <- apply(ploidy_checks,1, function(x) any(x=="odd", na.rm=T))
+aneuploid <- apply(ploidy_checks,1, function(x) any(x=="3n", na.rm=T))
 sum(aneuploid)
 odd_counts
 pcap <- pcap[match(rownames(ploidy_checks), pcap$SampleSZ),]
@@ -601,3 +605,12 @@ chrom_table <- rbind(chrom_table, apply(chrom_table,2,sum))
 chrom_table <- cbind("LG"=c(1:18, "Sum"), chrom_table)
 chrom_table[nrow(chrom_table),6] <- NA
 write.csv(chrom_table, "tables/lg_sums.csv", row.names = F, quote = F)
+
+
+### quickly look at median read depths both across individuals and sites
+depths.filt <- depths[,-c(1:3)]
+depths.filt[depths.filt < 5] <- NA #All sites with fewer than 5 reads were set to NA in VCF file
+site_means <- apply(depths.filt, 1, mean, na.rm=T)
+sample_means <- apply(depths.filt, 2, mean, na.rm=T)
+summary(site_means)
+summary(sample_means)

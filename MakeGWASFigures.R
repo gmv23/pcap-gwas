@@ -221,6 +221,7 @@ dev.off()
 
 
 ####### Now Mef
+
 #400 Kb on either side of peak SNP
 scaff62 <- mef[mef$chr==62,]
 
@@ -228,7 +229,7 @@ scaff62 <- mef[mef$chr==62,]
 p.scaff62 <- -log10(scaff62$Score.pval)
 
 #Get LD to peak SNP
-geno.scaff62 <- geno[,mt$chr==62]
+geno.scaff62 <- geno[,mef$chr==62]
 peak <- which(scaff62$Score.pval == min(scaff62$Score.pval))
 geno.peak <- geno.scaff62[,peak]
 lds <- rep(NA, nrow(scaff62))
