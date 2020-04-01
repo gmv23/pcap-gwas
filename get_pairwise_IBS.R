@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# This script takes a VCF file and creates a pairwise IBS similarity matrix 
+# This script takes a 012 formatted file (as output by VCFTools) and creates a pairwise IBS similarity matrix 
 # for use in identifying and filtering out clones
 
 ################################## LOAD 012 FILES ###############################

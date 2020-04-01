@@ -181,13 +181,6 @@ range(mt_snps$pos)
 diff(range(mt_snps$pos))
 mt_snps[which(mt_snps$Score.pval==min(mt_snps$Score.pval)),]
 
-#Look at predictions at peak SNP
-peak_geno <- geno[,which(mt_snps$Score.pval==min(mt_snps$Score.pval))]
-peak_mt <- data.frame("sample" = phenos$SampleSZ,
-                      "mt" = phenos$MT,
-                      "geno" = geno[,which(assocMT$Score.pval==min(assocMT$Score.pval))])
-peak_mt$match <- (peak_mt$mt == 'A1' & peak_mt$geno == 0) | (peak_mt$mt=='A2' & peak_mt$geno == 1)
-
 #Look at mefenoxam SNPs
 mef_snps <- assocMEF[assocMEF$Score.pval < .05/nrow(assocMEF),]
 range(mef_snps$pos)
@@ -203,54 +196,6 @@ meta$Field[geno_res == 1 | geno_res == 2]
 
 unique(meta$Field[geno_res == 2])
 meta$Field[geno_res == 2]
-
-sort(phenos$Mef5[geno_res==0])
-sort(phenos$Mef100[geno_res==0])
-
-sort(phenos$Mef5[geno_res==2])
-sort(phenos$Mef100[geno_res==2])
-
-phenos$SampleSZ[phenos$Mef5>.75 & geno_res==0]
-phenos$SampleSZ[phenos$Mef5==0 & geno_res==2]
-
-#Fst of these 6 SNPs
-get_p <- function(x){
-  x <- x[!is.na(x)]
-  return((2*sum(x==0) + sum(x==1))/(length(x)*2))
-}
-
-hudson <- function(x,y){
-  p1 <- get_p(x)
-  p2 <- get_p(y)
-  n1 <- 2*sum(!is.na(x))
-  n2 <- 2*sum(!is.na(y))
-  num1 <- (p1 - p2)^2
-  num2 <- (p1 * (1-p1))/(n1-1)
-  num3 <- (p2 * (1-p2))/(n2-1)
-  den <- (p1*(1-p2)) + (p2*(1-p1))
-  num <- num1 - num2 - num3
-  return(num/den)
-}
-
-fields <- c("Cayuga #1", "Erie #1", "Erie #2", "Ontario #1", "Suffolk #1")
-for(snp in which(assocMEF$Score.pval < .05/nrow(assocMEF))){
-  fst_mat <- matrix(NA, nrow=5, ncol=5)
-  for(i in 1:4){
-    for(j in ((i+1):5)){
-      x <- geno[phenos$Field %in% fields[i], snp]
-      y <- geno[phenos$Field %in% fields[j], snp]
-      fst_mat[i,j] <- hudson(x, y)
-    }
-  }
-  print(assocMEF[snp,])
-  print(fst_mat)
-}
-  
-#Lets look at haplotype at mef region
-mef_genos <- geno[,assocMEF$Score.pval < .05/nrow(assocMEF)]
-mef_haplos <- apply(mef_genos, 1, paste, collapse="")
-mef_haplos[grep('NA', mef_haplos)] <- NA
-stripchart(phenos$Mef5 ~ mef_haplos, vertical=T, method='jitter')
 
 #Look at mt snps
 geno_mt <- geno[,assocMT$Score.pval < .05/nrow(assocMT)]

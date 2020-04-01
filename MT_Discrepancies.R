@@ -74,7 +74,7 @@ snp.counts <- window_smooth(stats=geno.16, data_columns=6:8, FUN = function(x) s
                             scaffold_sizes = scaffold_sizes, smooth_by="distance")
 colnames(snp.counts)[3:5] <- colnames(geno.16)[6:8]
 
-#Get rid of any smoothed frequency where fewer than 15 snps contribute in window
+#Get rid of any smoothed frequency where fewer than 20 snps contribute in window
 minsnpcount <- 20
 geno.16.discordant.filter <- geno.16.discordant
 for(i in 3:5){
