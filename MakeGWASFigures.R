@@ -170,7 +170,7 @@ old.par <- par(no.readonly = T)
 par(mar=c(5,5,3,5))
 plot(ld$Dist, ld$Meanr2, 
      type='l', xaxt='n', xlim=c(0,500000),
-     xlab = 'Distance (kb)',
+     xlab = 'Distance (Kb)',
      ylab = expression(paste("Mean ", "r"^"2")))
 axis(1, at=seq(0,500000, by = 100000), 
      labels = seq(0,500, by=100))

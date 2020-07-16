@@ -223,6 +223,19 @@ discordant_mef
 #% variation in mef due to differences between clonal lineage
 clonal <- pcap[pcap$UniqueGenotype %in% clineages & !is.na(pcap$Mef5) & !is.na(pcap$Mef100),]
 clonal$UniqueGenotype <- as.factor(clonal$UniqueGenotype)
+
+#Mef5
+y <- clonal$Mef5
+X <- cbind(rep(1,length(y)))
+Z <- model.matrix(~0+clonal$UniqueGenotype)
+mef5.mm <- mixed.solve(y=y, X=X, Z=Z)
+mef5.mm$Vu/(mef5.mm$Vu+mef5.mm$Ve)
+
+#Mef100
+y <- clonal$Mef100
+mef100.mm <- mixed.solve(y=y, X=X, Z=Z)
+mef100.mm$Vu/(mef100.mm$Vu+mef100.mm$Ve)
+
 mef5.lmer <- lmer(clonal$Mef5~(1|clonal$UniqueGenotype))
 mef5.var <- as.data.frame(VarCorr(mef5.lmer))
 mef5.var$vcov[1]/sum(mef5.var$vcov)
